@@ -1,0 +1,250 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#0b0f1a">
+<meta name="robots" content="noindex, nofollow">
+<title>Agent OS</title>
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icon-192.png">
+<link rel="apple-touch-icon" href="icon-192.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,700;12..96,800&family=IBM+Plex+Mono:wght@400;500&family=Instrument+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #eceff4; --surface: #fff; --surface-2: #f5f7fb; --ink: #121826; --muted: #5a6478; --faint: #8b93a7; --line: #d8dde8;
+  --accent: #3346d3; --accent-ink: #fff; --accent-soft: #e3e7ff; --ok: #12885a; --ok-soft: #dcf3e8; --warn: #a8690f; --warn-soft: #fbeed6;
+  --crit: #bf3838; --crit-soft: #fbe3e3; --idle: #8a93a6; --idle-soft: #eceef3;
+  --f-display: "Bricolage Grotesque", "Segoe UI", system-ui, sans-serif;
+  --f-body: "Instrument Sans", "Segoe UI", Roboto, system-ui, sans-serif;
+  --f-mono: "IBM Plex Mono", ui-monospace, "Roboto Mono", monospace;
+  color-scheme: light;
+}
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #0b0f1a; --surface: #121828; --surface-2: #171f33; --ink: #e7ebf5; --muted: #9aa3b9; --faint: #6f7892; --line: #253049;
+    --accent: #8e9cff; --accent-ink: #0b0f1a; --accent-soft: #1e2653; --ok: #3cc98c; --ok-soft: #10342a; --warn: #e2a449; --warn-soft: #3a2b12;
+    --crit: #f07474; --crit-soft: #3d1a1d; --idle: #6f7892; --idle-soft: #1b2236;
+    color-scheme: dark;
+  }
+}
+* { box-sizing: border-box; }
+html, body { margin: 0; }
+body { background: var(--bg); color: var(--ink); font: 15px/1.5 var(--f-body); padding: env(safe-area-inset-top, 0px) 0 env(safe-area-inset-bottom, 0px); }
+.wrap { max-width: 640px; margin: 0 auto; padding: 0 16px 40px; display: grid; gap: 22px; }
+header { display: flex; align-items: center; justify-content: space-between; gap: 10px; padding-block: 16px 4px; }
+.marca { display: flex; align-items: center; gap: 10px; }
+.marca img { width: 30px; height: 30px; border-radius: 7px; }
+.marca h1 { font: 800 22px/1 var(--f-display); letter-spacing: -0.02em; margin: 0; }
+.meta { font: 12px/1.4 var(--f-mono); color: var(--muted); text-align: right; }
+.meta b { color: var(--ink); font-weight: 500; }
+h2 { font: 700 12.5px/1 var(--f-display); text-transform: uppercase; letter-spacing: .09em; color: var(--muted); margin: 0 0 10px; }
+.panel { background: var(--surface); border: 1px solid var(--line); border-radius: 14px; }
+.pad { padding: 16px; display: grid; gap: 12px; }
+.btn { border: 0; border-radius: 10px; padding: 11px 16px; font: 600 15px var(--f-body); cursor: pointer; background: var(--accent); color: var(--accent-ink); width: 100%; }
+.btn.sec { background: var(--surface-2); color: var(--ink); border: 1px solid var(--line); }
+.btn:disabled { opacity: .6; }
+.fila-btn { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+.paso { display: grid; grid-template-columns: 26px 1fr; gap: 10px; align-items: start; }
+.paso .n { width: 24px; height: 24px; border-radius: 50%; display: grid; place-items: center; background: var(--accent-soft); color: var(--accent); font: 700 12px var(--f-body); }
+.paso.hecho .n { background: var(--ok-soft); color: var(--ok); }
+.codigo { font: 11.5px/1.45 var(--f-mono); background: var(--surface-2); border: 1px solid var(--line); border-radius: 8px; padding: 10px; word-break: break-all; max-height: 120px; overflow: auto; user-select: all; }
+.nota { font-size: 13.5px; color: var(--muted); }
+.resumen { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 1px; background: var(--line); border-radius: 14px; overflow: hidden; border: 1px solid var(--line); }
+.stat { background: var(--surface); padding: 12px; display: grid; }
+.stat b { font: 700 24px/1.1 var(--f-display); font-variant-numeric: tabular-nums; }
+.stat span { font-size: 12px; color: var(--muted); }
+.sesion { padding: 13px 16px; border-top: 1px solid var(--line); display: grid; gap: 4px; }
+.sesion:first-child { border-top: 0; }
+.sesion-top { display: flex; justify-content: space-between; align-items: center; gap: 8px; }
+.sesion h3 { font: 700 17px/1.2 var(--f-display); margin: 0; overflow-wrap: anywhere; }
+.sesion .det { font: 12px/1.5 var(--f-mono); color: var(--muted); }
+.estado { font: 600 12px/1.5 var(--f-body); padding: 2px 9px 2px 8px; border-radius: 999px; display: inline-flex; align-items: center; gap: 6px; white-space: nowrap; }
+.estado::before { content: ""; width: 7px; height: 7px; border-radius: 50%; background: currentColor; }
+.e-trabajando { color: var(--ok); background: var(--ok-soft); }
+.e-activa, .e-esperando { color: var(--accent); background: var(--accent-soft); }
+.e-en-espera, .e-sin-mensajes { color: var(--idle); background: var(--idle-soft); }
+.ev { display: grid; grid-template-columns: 46px 1fr; gap: 10px; padding: 9px 16px; border-top: 1px solid var(--line); font-size: 14px; }
+.ev:first-child { border-top: 0; }
+.ev .h { font: 12px/1.6 var(--f-mono); color: var(--faint); }
+.ev .tipo { font: 600 11px/1.4 var(--f-body); text-transform: uppercase; letter-spacing: .05em; }
+.k-permiso, .k-error { color: var(--crit); } .k-espera { color: var(--warn); } .k-agente { color: var(--ok); } .k-inicio, .k-fin, .k-prueba { color: var(--muted); }
+.fila { display: flex; justify-content: space-between; gap: 10px; padding: 9px 16px; border-top: 1px solid var(--line); font-size: 14px; }
+.fila:first-child { border-top: 0; }
+.fila span:last-child { font-family: var(--f-mono); color: var(--muted); text-align: right; }
+.vacio { padding: 16px; color: var(--muted); font-size: 14px; }
+.aviso { background: var(--warn-soft); border-radius: 12px; padding: 12px 14px; font-size: 14px; }
+footer { text-align: center; font-size: 12px; color: var(--faint); display: grid; gap: 10px; }
+footer button { background: none; border: 0; color: var(--muted); text-decoration: underline; font: inherit; cursor: pointer; }
+:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div class="marca"><img src="icon-192.png" alt=""><h1>Agent OS</h1></div>
+    <div class="meta" id="meta"></div>
+  </header>
+  <div id="contenido"></div>
+  <footer id="pie"></footer>
+</div>
+<script>
+// Clave pública VAPID de la PC (A3N3-RESCOBAR). Es pública por diseño: solo sirve para que el
+// servicio push acepte mensajes firmados por la clave privada, que nunca sale de la PC.
+const VAPID = "BDN2J6byhM-5l2rzPNIGfvO953FWwNRqNbSRF7yOR4VUCGyIV_QlCsbzzHo6MpXoZNbGrT1Oc-HsR8wY-q_oY_w";
+
+const $ = (id) => document.getElementById(id);
+const esc = (s) => String(s ?? "").replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+
+// IndexedDB compartida con el service worker
+function db() {
+  return new Promise((res, rej) => {
+    const r = indexedDB.open("agentos", 1);
+    r.onupgradeneeded = () => r.result.createObjectStore("kv");
+    r.onsuccess = () => res(r.result);
+    r.onerror = () => rej(r.error);
+  });
+}
+async function leer(clave) {
+  const d = await db();
+  return new Promise((res) => { const t = d.transaction("kv").objectStore("kv").get(clave); t.onsuccess = () => res(t.result); t.onerror = () => res(undefined); });
+}
+
+function hace(iso) {
+  if (!iso) return "—";
+  const s = Math.max(0, (Date.now() - Date.parse(iso)) / 1000);
+  if (s < 60) return "hace " + Math.round(s) + " s";
+  if (s < 3600) return "hace " + Math.round(s / 60) + " min";
+  if (s < 86400) return "hace " + Math.round(s / 3600) + " h";
+  return "hace " + Math.round(s / 86400) + " d";
+}
+const hora = (iso) => iso ? new Date(iso).toLocaleTimeString("es-SV", { hour: "2-digit", minute: "2-digit", hour12: false }) : "—";
+const b64u = (buf) => btoa(String.fromCharCode(...new Uint8Array(buf))).replace(/\+/g, "-").replace(/\//g, "_").replace(/=+$/, "");
+const deB64u = (s) => Uint8Array.from(atob(s.replace(/-/g, "+").replace(/_/g, "/") + "===".slice((s.length + 3) % 4)), (c) => c.charCodeAt(0));
+const codigoDe = (sub) => "AOS1." + b64u(new TextEncoder().encode(JSON.stringify(sub)));
+const ETIQUETA = { permiso: "Necesita permiso", espera: "Terminó y espera", agente: "Agente terminado", inicio: "Sesión abierta", fin: "Sesión cerrada", error: "Error", prueba: "Prueba" };
+
+let registro = null;
+
+async function suscripcion() {
+  if (!registro) return null;
+  return registro.pushManager.getSubscription();
+}
+
+async function activar(boton) {
+  boton.disabled = true;
+  try {
+    const permiso = await Notification.requestPermission();
+    if (permiso !== "granted") { alertaInline("Sin permiso de notificaciones no puedo avisarte. Activalo en Ajustes del sitio y volvé a tocar el botón."); return; }
+    const sub = await registro.pushManager.subscribe({ userVisibleOnly: true, applicationServerKey: deB64u(VAPID) });
+    localStorage.setItem("agentos-codigo", codigoDe(sub.toJSON()));
+    await pintar();
+  } catch (e) { alertaInline("No se pudieron activar los avisos: " + e.message); }
+  finally { boton.disabled = false; }
+}
+
+function alertaInline(txt) {
+  const a = document.createElement("div"); a.className = "aviso"; a.textContent = txt;
+  $("contenido").prepend(a); setTimeout(() => a.remove(), 9000);
+}
+
+function tarjetaVinculo(codigo, vinculado) {
+  return '<section><h2>' + (vinculado ? "Código de vinculación" : "Vincular con la PC") + '</h2><div class="panel pad">' +
+    (vinculado ? "" : '<div class="paso hecho"><span class="n">✓</span><div>Avisos activados en este celular.</div></div><div class="paso"><span class="n">2</span><div>Mandale este código a Claude en el chat, o pegalo en <b>Agent OS → Celular</b> en la PC. Es una sola vez.</div></div>') +
+    '<div class="codigo" id="codigo">' + esc(codigo) + '</div>' +
+    '<div class="fila-btn"><button class="btn sec" type="button" id="copiar">Copiar</button><button class="btn" type="button" id="compartir">Compartir</button></div>' +
+    '<div class="nota">El código solo permite que <b>tu PC</b> te mande avisos cifrados. No da acceso a nada más.</div></div></section>';
+}
+
+async function pintar() {
+  const sub = await suscripcion();
+  const estado = await leer("estado");
+  const eventos = (await leer("eventos")) || [];
+  const codigo = sub ? codigoDe(sub.toJSON()) : null;
+  const permiso = "Notification" in window ? Notification.permission : "denied";
+  $("meta").innerHTML = estado ? "<b>" + esc(estado.maq) + "</b><br>" + esc(hace(estado.t)) : "";
+
+  // Sin suscripción: pasos para activar
+  if (!sub) {
+    const instalada = matchMedia("(display-mode: standalone)").matches;
+    $("contenido").innerHTML = '<section><h2>Configurar este celular</h2><div class="panel pad">' +
+      '<div class="paso' + (instalada ? " hecho" : "") + '"><span class="n">' + (instalada ? "✓" : "1") + '</span><div>' + (instalada ? "App instalada." : "Instalá la app: en Chrome tocá <b>⋮ → Instalar app</b> (o <b>Agregar a pantalla principal</b>) y abrila desde el ícono.") + '</div></div>' +
+      '<div class="paso"><span class="n">' + (instalada ? "2" : "2") + '</span><div>Activá los avisos. Tu PC te va a mandar notificaciones cifradas cuando una sesión de Claude necesite tu permiso, termine y te espere, o se abra o cierre. <b>No gasta tokens.</b></div></div>' +
+      (permiso === "denied" ? '<div class="aviso">Las notificaciones están bloqueadas para este sitio. Activalas en Ajustes → Sitios → Notificaciones.</div>' : "") +
+      '<button class="btn" type="button" id="activar">Activar avisos</button></div></section>';
+    $("activar").onclick = (e) => activar(e.currentTarget);
+    $("pie").innerHTML = "";
+    return;
+  }
+
+  // Suscripto pero todavía sin datos
+  if (!estado) {
+    $("contenido").innerHTML = tarjetaVinculo(codigo, false) +
+      '<section><h2>Estado</h2><div class="panel vacio">Esperando el primer aviso de la PC. Llega en cuanto la PC tenga tu código y pase algo en una sesión.</div></section>';
+    enlazarCodigo(codigo);
+    $("pie").innerHTML = '<button type="button" id="desactivar">Desactivar avisos</button>';
+    $("desactivar").onclick = desactivar;
+    return;
+  }
+
+  const ses = estado.ses || [];
+  const activas = ses.filter((s) => s.e === "trabajando" || s.e === "activa").length;
+  const mem = estado.mem || {};
+  let html = '<div class="resumen"><div class="stat"><b>' + ses.length + '</b><span>sesiones</span></div><div class="stat"><b>' + activas + '</b><span>con actividad</span></div><div class="stat"><b>' + (estado.tools24 ?? 0) + '</b><span>herramientas 24 h</span></div></div>';
+  html += '<section><h2>Agentes</h2><div class="panel">' + (ses.length ? ses.map((s) =>
+    '<div class="sesion"><div class="sesion-top"><h3>' + esc(s.n) + '</h3><span class="estado e-' + esc(String(s.e).replace(/\s+/g, "-")) + '">' + esc(s.e) + '</span></div>' +
+    '<div class="det">' + esc([s.p, s.ti, s.r ? "remoto" : null, s.m, s.h + " herramientas hoy", s.u ? "actividad " + hace(s.u) : "sin mensajes"].filter(Boolean).join(" · ")) + '</div></div>'
+  ).join("") : '<div class="vacio">No hay sesiones abiertas en la PC.</div>') + '</div></section>';
+  html += '<section><h2>Últimos avisos</h2><div class="panel">' + (eventos.length ? eventos.slice(0, 15).map((e) =>
+    '<div class="ev"><span class="h">' + hora(e.t) + '</span><div><div class="tipo k-' + esc(e.k) + '">' + esc(ETIQUETA[e.k] || e.k) + '</div>' + esc([e.s, e.d].filter(Boolean).join(" · ")) + '</div></div>'
+  ).join("") : '<div class="vacio">Sin avisos todavía.</div>') + '</div></section>';
+  html += '<section><h2>Memoria</h2><div class="panel">' +
+    '<div class="fila"><span>Notas</span><span>' + (mem.n ?? 0) + ' en ' + (mem.pr ?? 0) + ' proyectos</span></div>' +
+    '<div class="fila"><span>Repo en GitHub</span><span>' + (mem.r ? "sí" : "pendiente") + '</span></div>' +
+    '<div class="fila"><span>Claude conectado a la memoria</span><span>' + (mem.a ? "sí" : "pendiente") + '</span></div>' +
+    '<div class="fila"><span>Conflictos</span><span>' + (mem.c ?? 0) + '</span></div></div></section>';
+  if ((estado.inv || []).length) {
+    html += '<section><h2>Investigaciones</h2><div class="panel">' + estado.inv.map((r) =>
+      '<div class="fila"><span>' + esc(r[0]) + '</span><span>' + r[1] + ' ✔ · ' + r[2] + ' ✗ · ' + r[3] + ' únicos</span></div>').join("") + '</div></section>';
+  }
+  html += tarjetaVinculo(codigo, true);
+  $("contenido").innerHTML = html;
+  enlazarCodigo(codigo);
+  $("pie").innerHTML = '<span>Datos cifrados de punta a punta desde tu PC. Nada pasa por un servidor propio.</span><button type="button" id="desactivar">Desactivar avisos</button>';
+  $("desactivar").onclick = desactivar;
+}
+
+function enlazarCodigo(codigo) {
+  $("copiar").onclick = async (e) => {
+    try { await navigator.clipboard.writeText(codigo); e.currentTarget.textContent = "Copiado"; }
+    catch { const r = document.createRange(); r.selectNodeContents($("codigo")); getSelection().removeAllRanges(); getSelection().addRange(r); }
+  };
+  $("compartir").onclick = async () => {
+    if (navigator.share) { try { await navigator.share({ title: "Código Agent OS", text: codigo }); } catch { /* cancelado */ } }
+    else $("copiar").click();
+  };
+}
+
+async function desactivar() {
+  const sub = await suscripcion();
+  if (sub) await sub.unsubscribe();
+  await pintar();
+}
+
+(async () => {
+  if (!("serviceWorker" in navigator) || !("PushManager" in window)) {
+    $("contenido").innerHTML = '<div class="aviso">Este navegador no admite notificaciones push. Abrí esta página en Chrome para Android.</div>';
+    return;
+  }
+  registro = await navigator.serviceWorker.register("sw.js");
+  await navigator.serviceWorker.ready;
+  await pintar();
+  navigator.serviceWorker.addEventListener("message", (e) => { if (e.data === "actualizado") pintar(); });
+  document.addEventListener("visibilitychange", () => { if (!document.hidden) pintar(); });
+  setInterval(pintar, 30000);
+})();
+</script>
+</body>
+</html>
